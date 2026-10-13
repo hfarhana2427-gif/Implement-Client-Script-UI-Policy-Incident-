@@ -1,0 +1,68 @@
+ServiceNow Incident: Client Script and UI Policy
+=================================================
+
+PURPOSE
+This example shows:
+1. A Client Script that makes Short description mandatory when the Incident form loads.
+2. A UI Policy that makes Close notes mandatory when State is Closed.
+
+--------------------------------------------------
+PART 1: CLIENT SCRIPT
+--------------------------------------------------
+
+Table: Incident [incident]
+Name: Make Short Description Mandatory
+Type: onLoad
+Active: True
+UI Type: All
+
+Script:
+
+function onLoad() {
+    g_form.setMandatory('short_description', true);
+}
+
+How to create it:
+1. Open ServiceNow.
+2. Go to System Definition > Client Scripts.
+3. Click New.
+4. Set Table = Incident.
+5. Set Type = onLoad.
+6. Enter the name and paste the script above.
+7. Set Active = true, then click Submit.
+
+--------------------------------------------------
+PART 2: UI POLICY
+--------------------------------------------------
+
+Table: Incident [incident]
+Short description: Make Close Notes Mandatory When Closed
+Conditions: State is Closed
+Reverse if false: True
+On load: True
+Active: True
+
+UI Policy Action:
+- Field name: Close notes [close_notes]
+- Mandatory: True
+- Visible: Leave unchanged
+- Read-only: Leave unchanged
+
+How to create it:
+1. Go to System UI > UI Policies (or search for “UI Policies” in the filter navigator).
+2. Click New.
+3. Set Table = Incident.
+4. Enter the short description shown above.
+5. Add the condition: State is Closed.
+6. Enable Reverse if false and On load.
+7. Save the UI Policy.
+8. Open the UI Policy Actions related list and click New.
+9. Set Field name = Close notes.
+10. Set Mandatory = True. Leave Visible and Read-only unchanged.
+11. Save the action and test the Incident form.
+
+IMPORTANT NOTES
+- In some ServiceNow instances, the Closed state value may differ because of custom configuration. Select the actual Closed choice in the condition builder.
+- If your instance uses a different state field or has customized form behavior, adjust the condition accordingly.
+- The Client Script example applies to all Incident forms. If you only want it to apply in a particular view, configure the view condition as needed.
+- Test in a development or training instance before using in production.
